@@ -1,3 +1,5 @@
+const { tokenTypes, createDataToken } = require(__dirname + '/tokens.js')
+
 class TokenDef {
 	constructor(type, regexp) {
 		this.type = type
@@ -5,25 +7,32 @@ class TokenDef {
 	}
 }
 
+/**
+ * List of all supported tokens.
+ * This is all the possible "words" of the computor
+ * They will be evaluated in more complex structures (eg variable assignation, complex number...) in the evaluator
+ * Remember to put more specific cases before less specific cases!
+ * eg: i before var
+ */
 const possibleTokens = [
-	new TokenDef("plus", /^\+/),
-	new TokenDef("minus", /^\-/),
-	new TokenDef("matrix_mult", /^\*\*/),
-	new TokenDef("mult", /^\*/),
-	new TokenDef("div", /^\//),
-	new TokenDef("mod", /^%/),
-	new TokenDef("pow", /^\^/),
-	new TokenDef("equal", /^=/),
-	new TokenDef("number", /^\d+\.?\d*/),
-	new TokenDef("i", /^i/),
-	new TokenDef("var", /^[a-zA-Z]/),
-	new TokenDef("open_par", /^\(/),
-	new TokenDef("close_par", /^\)/),
-	new TokenDef("open_brack", /^\[/),
-	new TokenDef("close_brack", /^\]/),
-	new TokenDef("comma", /^,/),
-	new TokenDef("semicolon", /^;/),
-	new TokenDef("quest_mark", /^\?/),
+	new TokenDef(tokenTypes.plus, /^\+/),
+	new TokenDef(tokenTypes.minus, /^\-/),
+	new TokenDef(tokenTypes.matrixMultiplication, /^\*\*/),
+	new TokenDef(tokenTypes.mult, /^\*/),
+	new TokenDef(tokenTypes.div, /^\//),
+	new TokenDef(tokenTypes.mod, /^%/),
+	new TokenDef(tokenTypes.power, /^\^/),
+	new TokenDef(tokenTypes.equal, /^=/),
+	new TokenDef(tokenTypes.realNumber, /^\d+\.?\d*/),
+	new TokenDef(tokenTypes.i, /^i/),
+	new TokenDef(tokenTypes.variable, /^[a-zA-Z]/),
+	new TokenDef(tokenTypes.openParenthesis, /^\(/),
+	new TokenDef(tokenTypes.closeParenthesis, /^\)/),
+	new TokenDef(tokenTypes.openBracket, /^\[/),
+	new TokenDef(tokenTypes.closeBracket, /^\]/),
+	new TokenDef(tokenTypes.comma, /^,/),
+	new TokenDef(tokenTypes.semicolon, /^;/),
+	new TokenDef(tokenTypes.questionMark, /^\?/),
 ]
 
 function tokenize(line) {
@@ -32,22 +41,21 @@ function tokenize(line) {
 	while (line.length > 0) {
 		//Removing spaces at the start of the string
 		let spaces = /^\s+/.exec(line)
-		if (spaces != null)
+		if (spaces !== null)
 			line = line.substring(spaces[0].length)
 		if (line.length != 0) {
-			possibleTokens.find(tokDef => {
-				let regRes = tokDef.regexp.exec(line)
-				if (regRes == null)
+			const res = possibleTokens.find(tokDef => {
+				const regRes = tokDef.regexp.exec(line)
+				if (regRes === null)
 					return false
-				let token = { type: tokDef.type }
-				if (tokDef.type == "number")
-					token.value = +regRes[0]
-				else if (tokDef.type == "var")
-					token.value = regRes[0].toLowerCase()
-				tokens.push(token)
+				tokens.push(createDataToken(tokDef.type, regRes[0]))
 				line = line.substring(regRes[0].length)
 				return true
 			})
+			if (res == null) {
+				console.error(`Unrecognized token: ${line[0]} (ignored)`)
+				line = line.substring(1)
+			}
 		}
 	}
 	return tokens;
