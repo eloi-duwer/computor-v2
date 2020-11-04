@@ -14,11 +14,7 @@ function readUserInput() {
 		
 		tokens = tokenize(line);
 
-		//console.log(tokens)
-
 		evaluateTokens(tokens, variables)
-
-		//console.log(variables)
 
 		readUserInput()
 	})

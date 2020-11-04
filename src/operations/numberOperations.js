@@ -1,5 +1,6 @@
 const { tokenTypes, NumberType } = require(__dirname + '/../tokens.js')
 
+//Generic Pattern for all operations: 1 operation between two numbers
 function findTokens(tokens, operationType) {
 	let i = 2;
 	while (i < tokens.length) {
@@ -14,7 +15,7 @@ function findTokens(tokens, operationType) {
 
 /**
  * Standard operations: addition (+), substraction (-), multiplication (*), division (/), modulo (%) and power (^)
- * a multiplication is implicit when tho numbers are not separated by anything
+ * a multiplication is implicit when tho numbers are not separated by anything (variables are replace by their content, so 2 6 => 2 * 6 => 12)
  * We can not divide or modulo by 0
  */
 

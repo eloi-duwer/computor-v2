@@ -1,5 +1,6 @@
 const { tokenTypes } = require(__dirname + '/../tokens.js')
 
+// Assignation of something (number, matrix or other variable) to a variable
 const variableAssignation = {
 	pattern: tokens => {
 		if (tokens.length === 3

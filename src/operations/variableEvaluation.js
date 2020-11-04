@@ -1,6 +1,11 @@
 const { tokenTypes } = require(__dirname + '/../tokens.js')
 
-const variableAssignation = {
+/**
+ * Used to replace a variable type by it's content
+ * should NOT be triggered when it is an assignation, eg a = 2
+ * It is assumed that it is not an assignation when the second token is not an equal
+ */
+const variableEvaluation = {
 	pattern: tokens => {
 		let i = 0
 		while(i < tokens.length) {
@@ -20,4 +25,4 @@ const variableAssignation = {
 	}
 }
 
-module.exports = variableAssignation
+module.exports = variableEvaluation

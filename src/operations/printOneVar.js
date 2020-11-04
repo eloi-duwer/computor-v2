@@ -1,5 +1,9 @@
 const { tokenTypes } = require(__dirname + '/../tokens.js')
 
+/**
+ * Used for printing the content of a variable or the result of an operation
+ * Triggered when only one token is remaining, to print it
+ */
 const printOneVar = {
 	pattern: tokens => {
 		if (tokens.length === 1)
