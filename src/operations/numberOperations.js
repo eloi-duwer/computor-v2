@@ -21,7 +21,7 @@ function findTokens(tokens, operationType) {
 
 const numberAddition = {
 	pattern: tokens => findTokens(tokens, tokenTypes.plus),
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos];
 		let b = tokens[pos + 2]
 		return new NumberType(a.real + b.real, a.complex + b.complex)
@@ -30,7 +30,7 @@ const numberAddition = {
 
 const numberSubstraction = {
 	pattern: tokens =>  findTokens(tokens, tokenTypes.minus),
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos];
 		let b = tokens[pos + 2]
 		return new NumberType(a.real - b.real, a.complex - b.complex)
@@ -59,9 +59,9 @@ const numberMultiplication = {
 		}
 		return [-1 , -1]
 	},
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, len], tokens, _variables) => {
 		let a = tokens[pos];
-		let b = tokens[pos + (tokens[pos + 1].type === tokenTypes.mult ? 2 : 1)]
+		let b = tokens[pos + len - 1]
 		return complexMultiplication(a, b)
 	}
 }
@@ -72,7 +72,7 @@ function complexDivisionByReal(a, b) {
 
 const numberDivision = {
 	pattern: tokens =>  findTokens(tokens, tokenTypes.div),
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
 		// Conjugate of a complex = same real part, opposite complex part
@@ -94,7 +94,7 @@ const numberDivision = {
 
 const numberPower = {
 	pattern: tokens => findTokens(tokens, tokenTypes.power),
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
 		if (a.complex !== 0 || b.complex !== 0) {
@@ -107,7 +107,7 @@ const numberPower = {
 
 const numberModulo = {
 	pattern: tokens => findTokens(tokens, tokenTypes.mod),
-	evaluate: (pos, tokens, _variables) => {
+	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
 		if (a.complex !== 0 || b.complex !== 0) {

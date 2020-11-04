@@ -15,7 +15,7 @@ const variableEvaluation = {
 		}
 		return [-1, -1]
 	},
-	evaluate: (pos, tokens, variables) => {
+	evaluate: ([pos, _len], tokens, variables) => {
 		let variable = variables[tokens[pos].name];
 		if (!variable) {
 			console.log(`Variable ${tokens[pos].name} doesn't exist`)

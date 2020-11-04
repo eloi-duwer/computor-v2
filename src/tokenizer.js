@@ -25,6 +25,8 @@ const possibleTokens = [
 	new TokenDef(tokenTypes.equal, /^=/),
 	new TokenDef(tokenTypes.realNumber, /^\d+\.?\d*/),
 	new TokenDef(tokenTypes.i, /^i/),
+	new TokenDef(tokenTypes.printVars, /^vars/),
+	new TokenDef(tokenTypes.printFullVars, /^fullVars/),
 	new TokenDef(tokenTypes.variable, /^[a-zA-Z]/),
 	new TokenDef(tokenTypes.openParenthesis, /^\(/),
 	new TokenDef(tokenTypes.closeParenthesis, /^\)/),

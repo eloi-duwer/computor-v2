@@ -12,7 +12,7 @@ const variableAssignation = {
 			return [0, 3]
 		return [-1, -1]
 	},
-	evaluate: (_pos, tokens, variables) => {
+	evaluate: (_posLen, tokens, variables) => {
 		if (!variables[tokens[0].name])
 			variables[tokens[0].name] = tokens[0]
 		if (tokens[2].type === tokenTypes.variable) {

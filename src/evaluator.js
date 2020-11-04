@@ -11,7 +11,6 @@
  * Evaluations make operations on the more complex tokens, like addition or substraction
  */
 const assignation = require(__dirname + '/operations/assignation.js')
-const printOneVar = require(__dirname + '/operations/printOneVar')
 const variableEvaluation = require(__dirname + '/operations/variableEvaluation.js')
 const negativeEvaluation = require(__dirname + '/operations/negativeEvaluation.js')
 const {
@@ -22,6 +21,36 @@ const {
 	numberModulo,
 	numberPower
 } = require(__dirname + '/operations/numberOperations.js')
+const { printVars, printFullVars } = require(__dirname + '/operations/printVariables.js')
+
+
+const { tokenTypes } = require(__dirname + '/tokens.js')
+/**
+ * Evaluates the inner most set of parenthesis
+ * Calls evaluateTokens recursively, sending only tokens inside the parenthesis and returing the result of the evaluation
+ * Not in a separate file because it would cause circular dependency, and I didn't manage to deal with it...
+ */
+const parenthesisEvaluation = {
+	pattern: tokens => {
+		let openParIndex = -1
+		let i = 0;
+		while (i < tokens.length) {
+			if (tokens[i].type === tokenTypes.openParenthesis)
+				openParIndex = i
+			else if (openParIndex >= 0 && tokens[i].type === tokenTypes.closeParenthesis)
+				return [openParIndex, i - openParIndex + 1]
+			i++
+		}
+		return [-1, -1]
+	},
+	evaluate: ([pos, len], tokens, variables) => {
+		if (len <= 2) {
+			console.error("Can't evaluate empty parenthesis")
+			return null
+		}
+		return evaluateTokens(tokens.slice(pos + 1, pos + len - 1), variables);
+	}
+}
 
 /**
  * Here are defined operator precedence
@@ -29,10 +58,12 @@ const {
  * Then we can put all classic operations, with classic operator precedence : * and / before + and - ...
  */
 const operations = [
+	printFullVars,
+	printVars,
+	parenthesisEvaluation,
 	variableEvaluation,
 	negativeEvaluation,
 	assignation,
-	printOneVar,
 	numberPower,
 	numberMultiplication,
 	numberDivision,
@@ -47,7 +78,7 @@ function evaluateTokens(tokens, variables) {
 			let [pos, length] = op.pattern(tokens)
 			if (pos === -1 || length == -1)
 				return false
-			let ret = op.evaluate(pos, tokens, variables)
+			let ret = op.evaluate([pos, length], tokens, variables)
 			if (Array.isArray(ret))
 				tokens.splice(pos, length, ...ret)
 			else if (ret != null)
@@ -56,11 +87,12 @@ function evaluateTokens(tokens, variables) {
 				tokens.splice(pos, length)
 			return true
 		})
-		if (!foundOperation) {
-			console.log(`Can't further evaluate tokens : ${tokens.map(t => t.toString()).join(' ')}`)
-			return
-		}
+		//The set of tokens can't be evaluated further
+		if (!foundOperation)
+			return tokens
 	}
+	//We consumed all tokens
+	return tokens
 }
 
 module.exports = evaluateTokens

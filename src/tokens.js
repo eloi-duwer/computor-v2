@@ -18,6 +18,8 @@ const tokenTypes = {
 	comma: "comma",
 	semicolon: "semicolon",
 	questionMark: "questionMark",
+	printVars: "printVars",
+	printFullVars: "printFullVars",
 	// "Complex" types, they are a construction of multiple primitive types
 	//Actually complex numbers are used to represent all numbers in the app, as they are a generalization of real numbers
 	complexNumber: "complexNumber",
@@ -63,7 +65,7 @@ class VariableType extends DataType {
 	constructor(sourceStr) {
 		super(tokenTypes.variable, sourceStr)
 		this.name = sourceStr.toLowerCase()
-		this.toString = () => this.value === null ? this.name : this.value.toString()
+		this.toString = () => this.value === null ? "null" : this.value.toString()
 		this.value = null
 	}
 }
