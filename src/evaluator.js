@@ -13,6 +13,7 @@
 const assignation = require(__dirname + '/operations/assignation.js')
 const variableEvaluation = require(__dirname + '/operations/variableEvaluation.js')
 const negativeEvaluation = require(__dirname + '/operations/negativeEvaluation.js')
+const matrixParser = require(__dirname + "/operations/matrixParsing")
 const {
 	numberAddition,
 	numberSubstraction,
@@ -57,12 +58,15 @@ const parenthesisEvaluation = {
  * First there MUST be "parsing" operations like function call / definition, matrixes parser...
  * Then we can put all classic operations, with classic operator precedence : * and / before + and - ...
  */
+//TODO: Some operations MUST have the same operator precedence, like + and - : 1 - 5 + 7 : if - is evaluated before : result is 3, if + before : -11
+// - and + MUST have the same precedence, * / % too
 const operations = [
 	printFullVars,
 	printVars,
 	parenthesisEvaluation,
 	variableEvaluation,
 	negativeEvaluation,
+	matrixParser,
 	assignation,
 	numberPower,
 	numberMultiplication,
@@ -72,6 +76,10 @@ const operations = [
 	numberSubstraction
 ]
 
+/**
+ * TODO Possible optimization: Once a given operation returns [-1, 1], it MIGHT (i'm not sure) be impossible for it to not return [-1, -1],
+ * meaning that we might not have to check the pattern again
+ */
 function evaluateTokens(tokens, variables) {
 	while (tokens.length > 0) {
 		let foundOperation = operations.find(op => {

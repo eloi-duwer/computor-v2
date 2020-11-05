@@ -65,8 +65,22 @@ class VariableType extends DataType {
 	constructor(sourceStr) {
 		super(tokenTypes.variable, sourceStr)
 		this.name = sourceStr.toLowerCase()
-		this.toString = () => this.value === null ? "null" : this.value.toString()
+		this.toString = () => this.value === null ? this.sourceStr : this.value.toString()
 		this.value = null
+	}
+}
+
+class MatrixType extends DataType {
+	constructor(values) {
+		let sourceStr = values.map(line => {
+			return '[ ' + line.map(column => {
+				return column.toString()
+			}).join(' , ') + ' ]'
+		}).join('\n')
+		super(tokenTypes.matrix, sourceStr)
+		this.nb_lines = values.length
+		this.nb_columns = this.nb_lines > 0 ? values[0].length : 0
+		this.values = values
 	}
 }
 
@@ -88,5 +102,6 @@ module.exports = {
 	createDataToken,
 	DataType,
 	NumberType,
-	VariableType
+	VariableType,
+	MatrixType
 }

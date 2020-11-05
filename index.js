@@ -24,12 +24,16 @@ function printLastToken(token, variables) {
 function readUserInput() {
 	rl.question("> ", line => {
 		
+		//Comments starts with #
 		if (line.startsWith('#'))
 			return readUserInput()
+		//To stop reading lines
+		else if (line === "quit") {
+			rl.close()
+			return;
+		}
 
 		tokens = tokenize(line);
-
-		//Comments starts with #
 
 		let ret = evaluateTokens(tokens, variables)
 
@@ -38,7 +42,7 @@ function readUserInput() {
 		else if (ret.length > 1)
 			console.log(`Can't further evaluate tokens : ${ret.map(t => t.toString()).join(' ')}`)
 
-		readUserInput()
+		return readUserInput()
 	})
 }
 
