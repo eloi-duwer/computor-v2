@@ -22,6 +22,13 @@ const {
 	numberModulo,
 	numberPower
 } = require(__dirname + '/operations/numberOperations.js')
+const {
+	matrixAddition,
+	matrixSubstraction,
+	matrixClassicMultiplication,
+	matrixDivision,
+	matrixMultiplication,
+} = require(__dirname + '/operations/matrixOperations.js')
 const { printVars, printFullVars } = require(__dirname + '/operations/printVariables.js')
 
 
@@ -69,11 +76,16 @@ const operations = [
 	matrixParser,
 	assignation,
 	numberPower,
+	matrixMultiplication,
 	numberMultiplication,
+	matrixClassicMultiplication,
 	numberDivision,
+	matrixDivision,
 	numberModulo,
 	numberAddition,
-	numberSubstraction
+	matrixAddition,
+	numberSubstraction,
+	matrixSubstraction
 ]
 
 /**

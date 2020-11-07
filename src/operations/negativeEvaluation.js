@@ -18,7 +18,7 @@ const negativeEvaluation = {
 		return [-1, -1]
 	},
 	evaluate: ([pos, _len], tokens, _variables) => {
-		return new NumberType((-tokens[pos + 1].value).toString())
+		return new NumberType(-tokens[pos + 1].real, -tokens[pos + 1].complex)
 	}
 }
 

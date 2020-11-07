@@ -72,11 +72,11 @@ class VariableType extends DataType {
 
 class MatrixType extends DataType {
 	constructor(values) {
-		let sourceStr = values.map(line => {
+		let sourceStr = '[' + values.map(line => {
 			return '[ ' + line.map(column => {
 				return column.toString()
 			}).join(' , ') + ' ]'
-		}).join('\n')
+		}).join(' ; ') + ']'
 		super(tokenTypes.matrix, sourceStr)
 		this.nb_lines = values.length
 		this.nb_columns = this.nb_lines > 0 ? values[0].length : 0

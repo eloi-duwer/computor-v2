@@ -14,6 +14,47 @@ function findTokens(tokens, operationType) {
 }
 
 /**
+ * Functions for standard operations, outside of the operation object for reusability with matrixes operations
+ */
+
+function addComplex(a, b) {
+	return new NumberType(a.real + b.real, a.complex + b.complex)
+}
+
+function subComplex(a, b) {
+	return new NumberType(a.real - b.real, a.complex - b.complex)
+}
+
+// (a + ib)(c + id) = (real part)ac - bd, (complex part)ad + bc
+function multComplex(a, b) {
+	return new NumberType(
+		(a.real * b.real) - (a.complex * b.complex),
+		(a.real * b.complex) + (a.complex * b.real)
+	)
+}
+
+function complexDivisionByReal(a, b) {
+	return new NumberType(a.real / b.real, a.complex / b.real)
+}
+
+function divComplex(a, b) {
+	// Conjugate of a complex = same real part, opposite complex part
+	if (b.real === 0 && b.complex === 0) {
+		console.error("Can't divide by zero")
+		return null
+	}
+	if (a.complex === 0 && b.complex === 0)
+		return new NumberType(a.real / b.real, 0)
+	if (b.complex === 0)
+		return complexDivisionByReal(a, b)
+	let bConjugate = new NumberType(b.real, -b.complex)
+	return complexDivisionByReal(
+		multComplex(a, bConjugate),
+		multComplex(b, bConjugate) // Multiplication of a complex by its conjugate is always a real
+	)
+}
+
+/**
  * Standard operations: addition (+), substraction (-), multiplication (*), division (/), modulo (%) and power (^)
  * a multiplication is implicit when tho numbers are not separated by anything (variables are replace by their content, so 2 6 => 2 * 6 => 12)
  * We can not divide or modulo by 0
@@ -24,7 +65,7 @@ const numberAddition = {
 	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos];
 		let b = tokens[pos + 2]
-		return new NumberType(a.real + b.real, a.complex + b.complex)
+		return addComplex(a, b)
 	}
 }
 
@@ -33,16 +74,8 @@ const numberSubstraction = {
 	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos];
 		let b = tokens[pos + 2]
-		return new NumberType(a.real - b.real, a.complex - b.complex)
+		return subComplex(a, b)
 	}
-}
-
-// (a + ib)(c + id) = (real part)ac - bd, (complex part)ad + bc
-function complexMultiplication(a, b) {
-	return new NumberType(
-		(a.real * b.real) - (a.complex * b.complex),
-		(a.real * b.complex) + (a.complex * b.real)
-	)
 }
 
 const numberMultiplication = {
@@ -62,33 +95,17 @@ const numberMultiplication = {
 	evaluate: ([pos, len], tokens, _variables) => {
 		let a = tokens[pos];
 		let b = tokens[pos + len - 1]
-		return complexMultiplication(a, b)
+		return multComplex(a, b)
 	}
 }
 
-function complexDivisionByReal(a, b) {
-	return new NumberType(a.real / b.real, a.complex / b.real)
-}
 
 const numberDivision = {
 	pattern: tokens =>  findTokens(tokens, tokenTypes.div),
 	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
-		// Conjugate of a complex = same real part, opposite complex part
-		let bConjugate = new NumberType(b.real, -b.complex)
-		if (b.real === 0 && b.complex === 0) {
-			console.error("Can't divide by zero")
-			return null
-		}
-		if (a.complex === 0 && b.complex === 0)
-			return new NumberType(a.real / b.real, 0)
-		if (a.complex === 0)
-			return complexDivisionByReal(a, b)
-		return complexDivisionByReal(
-			complexMultiplication(a, bConjugate),
-			complexMultiplication(b, bConjugate) // Multiplication of a complex by its conjugate is always a real
-		)
+		return divComplex(a, b)
 	}
 }
 
@@ -98,7 +115,7 @@ const numberPower = {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
 		if (a.complex !== 0 || b.complex !== 0) {
-			console.error("Power of complex numbers is not (yet) supported")
+			console.error("Power of complex numbers is not supported")
 			return null;
 		}
 		return new NumberType(Math.pow(a.real, b.real), 0)
@@ -111,7 +128,7 @@ const numberModulo = {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
 		if (a.complex !== 0 || b.complex !== 0) {
-			console.error("Modulo of complex numbers is not (yet) supported")
+			console.error("Modulo of complex numbers is not supported")
 			return null;
 		}
 		if (b.real === 0) {
@@ -128,5 +145,9 @@ module.exports = {
 	numberMultiplication,
 	numberDivision,
 	numberModulo,
-	numberPower
+	numberPower,
+	addComplex,
+	subComplex,
+	multComplex,
+	divComplex
 }

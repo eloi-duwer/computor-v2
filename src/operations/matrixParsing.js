@@ -1,6 +1,4 @@
-const { MatrixType } = require("../tokens");
-
-const { tokenTypes } = require(__dirname + '/../tokens.js')
+const { tokenTypes, MatrixType } = require(__dirname + '/../tokens.js')
 
 function printErrorMatrix(tokens, msg) {
 	console.error("Matrix declaration syntax is invalid : " + msg);
@@ -65,8 +63,10 @@ const matrixParser = {
 		return [-1, -1]
 	},
 	evaluate: ([pos, len], tokens, _variables) => {
-		if (len === 2)
-			return new MatrixType([])
+		if (len === 2) {
+			console.error("A matrix can't be empty")
+			return null
+		}
 		let matrixTokens = tokens.slice(pos + 1, pos + len - 1)
 		let i = 0;
 		let res = []
