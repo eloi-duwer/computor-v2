@@ -23,9 +23,9 @@ const tokenTypes = {
 	// "Complex" types, they are a construction of multiple primitive types
 	//Actually complex numbers are used to represent all numbers in the app, as they are a generalization of real numbers
 	complexNumber: "complexNumber",
-	equation: "equation",
 	matrix: "matrix",
 	function: "function",
+	polynomial: "polynomial"
 }
 
 class DataType {
@@ -95,6 +95,26 @@ class FunctionType extends DataType {
 	}
 }
 
+class PolynomialType extends DataType {
+	constructor(name, varName, monomes) {
+		let sourceStr = Object.keys(monomes).sort((a, b) => +b - +a).map((k, i) => {
+			let ret = ""
+			if (i > 0 && (monomes[k].real >= 0 || monomes[k].real === 0 && monomes[k].complex >= 0))
+				ret += "+ "
+			ret += monomes[k].toString()
+			if (+k !== 0) {
+				ret += varName;
+				if (+k > 1)
+					ret += "^" + k
+			}
+			return ret
+		}).join(" ")
+		super(tokenTypes.polynomial, sourceStr)
+		this.name = name
+		this.monomes = monomes
+	}
+}
+
 function createDataToken(tokenType, sourceStr) {
 	switch(tokenType) {
 		case tokenTypes.variable:
@@ -115,5 +135,6 @@ module.exports = {
 	NumberType,
 	VariableType,
 	MatrixType,
-	FunctionType
+	FunctionType,
+	PolynomialType
 }
