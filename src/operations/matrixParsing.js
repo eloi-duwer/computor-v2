@@ -1,7 +1,7 @@
 const { tokenTypes, MatrixType } = require(__dirname + '/../tokens.js')
 
 function printErrorMatrix(tokens, msg) {
-	console.error("Matrix declaration syntax is invalid : " + msg);
+	console.error("Matrix declaration syntax is invalid: " + msg);
 	console.error("Tokens: " + tokens.map(t => t.toString()).join(' '))
 }
 

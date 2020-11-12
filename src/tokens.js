@@ -25,6 +25,7 @@ const tokenTypes = {
 	complexNumber: "complexNumber",
 	equation: "equation",
 	matrix: "matrix",
+	function: "function",
 }
 
 class DataType {
@@ -84,6 +85,16 @@ class MatrixType extends DataType {
 	}
 }
 
+class FunctionType extends DataType {
+	constructor(name, vars, tokens) {
+		let sourceStr = tokens.map(t => t.toString()).join(' ')
+		super(tokenTypes.function, sourceStr)
+		this.name = name
+		this.vars = vars
+		this.tokens = tokens		
+	}
+}
+
 function createDataToken(tokenType, sourceStr) {
 	switch(tokenType) {
 		case tokenTypes.variable:
@@ -103,5 +114,6 @@ module.exports = {
 	DataType,
 	NumberType,
 	VariableType,
-	MatrixType
+	MatrixType,
+	FunctionType
 }
