@@ -44,11 +44,11 @@ function parseMatrixLine(ret, matrixTokens, i) {
 }
 
 const matrixParser = {
-	pattern: token => {
+	pattern: tokens => {
 		let i = 0;
 		let posFirstBracket = -1
 		let nbBrackets = 0
-		while (i < token.length) {
+		while (i < tokens.length) {
 			if (tokens[i].type === tokenTypes.openBracket) {
 				if (posFirstBracket === -1)
 					posFirstBracket = i

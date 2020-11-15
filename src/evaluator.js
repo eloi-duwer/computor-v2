@@ -32,6 +32,7 @@ const {
 const { printVars, printFullVars } = require(__dirname + '/operations/printVariables.js')
 const parenthesisEvaluation = require(__dirname + '/operations/parenthesisEvaluation.js')
 const functionAssignation = require(__dirname + '/operations/functionAssignation.js')
+const functionEvaluation = require(__dirname + '/operations/functionEvaluation.js')
 
 /**
  * Here are defined operator precedence
@@ -44,10 +45,11 @@ const operations = [
 	printFullVars,
 	printVars,
 	functionAssignation,
-	parenthesisEvaluation,
 	variableEvaluation,
 	negativeEvaluation,
 	matrixParser,
+	functionEvaluation,
+	parenthesisEvaluation,
 	assignation,
 	numberPower,
 	matrixMultiplication,
@@ -68,11 +70,15 @@ const operations = [
  */
 function evaluateTokens(tokens, variables) {
 	while (tokens.length > 0) {
-		let foundOperation = operations.find(op => {
+		let foundOperation = operations.find((op, i) => {
 			let [pos, length] = op.pattern(tokens)
 			if (pos === -1 || length == -1)
 				return false
+			//console.log(`Found operation ${i}, ${pos}, ${length}`)
+			//console.log(tokens)
+			//console.log(variables)
 			let ret = op.evaluate([pos, length], tokens, variables, evaluateTokens)
+			//console.log({ret})
 			if (Array.isArray(ret))
 				tokens.splice(pos, length, ...ret)
 			else if (ret != null)

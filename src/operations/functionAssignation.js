@@ -1,6 +1,8 @@
+const { VariableType } = require("../tokens")
+
 const { tokenTypes, FunctionType, NumberType, PolynomialType } = require(__dirname + '/../tokens.js')
 
-const { addComplex, subComplex, multComplex, divComplex } = require(__dirname + '/numberOperations.js')
+const { addComplex, multComplex, divComplex } = require(__dirname + '/numberOperations.js')
 
 const variableEvaluation = require(__dirname + '/variableEvaluation.js')
 
@@ -50,7 +52,6 @@ function createPolynomial(funcName, vars, tokens) {
 	let coeff = new NumberType(0, 0)
 	let sign = new NumberType(1, 0)
 	while (i < tokens.length) {
-		//console.log({i, token: tokens[i], exp, coeff, sign: sign.real})
 		//It's a new monome: we add the current one to the list, and we initialize a new one
 		if (tokens[i].type === tokenTypes.minus || tokens[i].type === tokenTypes.plus) {
 			monomes = addMonome(monomes, exp, coeff, sign)
@@ -156,19 +157,21 @@ const functionAssignation = {
 				return null
 			funcTokens.splice(pos, len, ret)
 		}
-		let ret
+		let func
 		if (vars.length === 1 && isPolynomialLike(funcTokens)) {
-			ret = createPolynomial(name, vars, funcTokens)
-			if (ret === null) {
-				console.log("polynomial parsing error")
-				ret = new FunctionType(name, vars, funcTokens)
+			func = createPolynomial(name, vars, funcTokens)
+			if (func === null) { // The function can't be assimiled as a polynomial, we return a classic function
+			func = new FunctionType(name, vars, funcTokens)
 			}
 		}
 		else {
-			ret = new FunctionType(name, vars, funcTokens)
+			func = new FunctionType(name, vars, funcTokens)
 		}
-		variables[name] = ret
-		return ret
+		let variableFunc = new VariableType(func.toString())
+		variableFunc.value = func
+		variableFunc.name = func.name
+		variables[name] = variableFunc
+		return func
 	}
 }
 

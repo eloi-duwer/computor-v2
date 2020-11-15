@@ -54,6 +54,15 @@ function divComplex(a, b) {
 	)
 }
 
+//TODO add support for complex number for a (at least), this case can occur in polynomials
+function powComplex(a, b) {
+	if (a.complex !== 0 || b.complex !== 0) {
+		console.error("Power of complex numbers is not supported")
+		return null;
+	}
+	return new NumberType(Math.pow(a.real, b.real), 0)
+}
+
 /**
  * Standard operations: addition (+), substraction (-), multiplication (*), division (/), modulo (%) and power (^)
  * a multiplication is implicit when tho numbers are not separated by anything (variables are replace by their content, so 2 6 => 2 * 6 => 12)
@@ -114,11 +123,7 @@ const numberPower = {
 	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]
-		if (a.complex !== 0 || b.complex !== 0) {
-			console.error("Power of complex numbers is not supported")
-			return null;
-		}
-		return new NumberType(Math.pow(a.real, b.real), 0)
+		return powComplex(a, b)
 	}
 }
 
@@ -149,5 +154,6 @@ module.exports = {
 	addComplex,
 	subComplex,
 	multComplex,
-	divComplex
+	divComplex,
+	powComplex
 }
