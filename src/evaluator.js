@@ -36,11 +36,9 @@ const functionEvaluation = require(__dirname + '/operations/functionEvaluation.j
 
 /**
  * Here are defined operator precedence
- * First there MUST be "parsing" operations like function call / definition, matrixes parser...
+ * First there are be "parsing" operations like function call / definition, matrixes parser...
  * Then we can put all classic operations, with classic operator precedence : * and / before + and - ...
  */
-//TODO: Some operations MUST have the same operator precedence, like + and - : 1 - 5 + 7 : if - is evaluated before : result is 3, if + before : -11
-// - and + MUST have the same precedence, * / % too
 const operations = [
 	printFullVars,
 	printVars,
@@ -52,32 +50,35 @@ const operations = [
 	parenthesisEvaluation,
 	assignation,
 	numberPower,
-	matrixMultiplication,
-	numberMultiplication,
-	matrixClassicMultiplication,
-	numberDivision,
-	matrixDivision,
-	numberModulo,
-	numberAddition,
-	matrixAddition,
-	numberSubstraction,
-	matrixSubstraction
+	[matrixMultiplication, matrixClassicMultiplication, numberMultiplication, numberDivision, matrixDivision, numberModulo],
+	[numberAddition, matrixAddition, numberSubstraction, matrixSubstraction]
 ]
 
-/**
- * TODO Possible optimization: Once a given operation returns [-1, 1], it MIGHT (i'm not sure) be impossible for it to not return [-1, -1],
- * meaning that we might not have to check the pattern again
- */
+function findOp(tokens, operations) {
+	let pos = -1, length = -1, evalutateFunc = null;
+	if (!Array.isArray(operations))
+		operations = [operations]
+	operations.forEach(op => {
+		let [p, l] = op.pattern(tokens)
+		if (pos === -1 || (p !== -1 && p < pos)) {
+			pos = p;
+			length = l
+			evalutateFunc = op.evaluate
+		}
+	})
+	return [pos, length, evalutateFunc]
+}
+
 function evaluateTokens(tokens, variables) {
 	while (tokens.length > 0) {
-		let foundOperation = operations.find((op, i) => {
-			let [pos, length] = op.pattern(tokens)
+		foundOperation = operations.find(op => {
+			let [pos, length, evaluateFunc] = findOp(tokens, op)
 			if (pos === -1 || length == -1)
 				return false
 			//console.log(`Found operation ${i}, ${pos}, ${length}`)
 			//console.log(tokens)
 			//console.log(variables)
-			let ret = op.evaluate([pos, length], tokens, variables, evaluateTokens)
+			let ret = evaluateFunc([pos, length], tokens, variables, evaluateTokens)
 			//console.log({ret})
 			if (Array.isArray(ret))
 				tokens.splice(pos, length, ...ret)

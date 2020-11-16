@@ -119,7 +119,18 @@ const numberDivision = {
 }
 
 const numberPower = {
-	pattern: tokens => findTokens(tokens, tokenTypes.power),
+	//Special case: Power is right associative, so we check the tokens in reverse order
+	pattern: tokens => {
+		let i = tokens.length - 3
+		while (i >= 0) {
+			if (tokens[i].type === tokenTypes.complexNumber
+				&& tokens[i + 1].type === tokenTypes.power
+				&& tokens[i + 2].type === tokenTypes.complexNumber)
+				return [i, 3];
+			i--
+		}
+		return [-1, -1]
+	},
 	evaluate: ([pos, _len], tokens, _variables) => {
 		let a = tokens[pos]
 		let b = tokens[pos + 2]

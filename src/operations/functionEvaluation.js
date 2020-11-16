@@ -34,7 +34,9 @@ const functionEvaluation = {
 		let i = 0;
 		while (i < tokens.length) {
 			if (tokens[i].type === tokenTypes.function || tokens[i].type === tokenTypes.polynomial) {
-				return getFuncLength(tokens, i)
+				let ret = getFuncLength(tokens, i)
+				if (ret[0] !== -1 && ret[1] !== -1)
+					return ret
 			}
 			i++
 		}
