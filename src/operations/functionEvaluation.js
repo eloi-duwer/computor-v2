@@ -30,10 +30,12 @@ function getFuncLength(tokens, pos) {
 }
 
 const functionEvaluation = {
-	pattern: tokens => {
+	pattern: (tokens) => {
+		//console.log(tokens, variables)
 		let i = 0;
 		while (i < tokens.length) {
-			if (tokens[i].type === tokenTypes.function || tokens[i].type === tokenTypes.polynomial) {
+			if (tokens[i].type === tokenTypes.function
+				|| tokens[i].type === tokenTypes.polynomial) {
 				let ret = getFuncLength(tokens, i)
 				if (ret[0] !== -1 && ret[1] !== -1)
 					return ret
@@ -56,22 +58,31 @@ const functionEvaluation = {
 					i += 2
 				}
 			}
-			//console.log(vars)
 			if (nbArgs !== tokens[pos].vars.length) {
 				console.error(`Wrong number of arguments passed to the function ${tokens[pos].name}: expected ${tokens[pos].vars.length}, got ${nbArgs}`)
 				return null
 			}
 			return evaluateTokens([...tokens[pos].tokens], vars)
 		}
-		let arg = tokens[pos + 2]
-		return Object.keys(tokens[pos].monomes).reduce((acc, val) => {
-			if (acc === null) //An operation returned an error previously
+		else {
+			if (len !== 4) {
+				console.error(`A polynomial function needs exactly one argument`)
 				return null
-			let pow = powComplex(arg, new NumberType(+val, 0))
-			if (pow === null)
+			}
+			if (tokens[pos + 2].type !== tokenTypes.complexNumber) {
+				console.error(`The argument passed to a polynomial must be a number, got ${tokens[pos + 2].type}`)
 				return null
-			return addComplex(acc, multComplex(pow, tokens[pos].monomes[val]))
-		}, new NumberType(0, 0))
+			}
+			let arg = tokens[pos + 2]
+			return Object.keys(tokens[pos].monomes).reduce((acc, val) => {
+				if (acc === null) //An operation returned an error previously
+					return null
+				let pow = powComplex(arg, new NumberType(+val, 0))
+				if (pow === null)
+					return null
+				return addComplex(acc, multComplex(pow, tokens[pos].monomes[val]))
+			}, new NumberType(0, 0))
+		}
 	}
 }
 

@@ -30,6 +30,7 @@ const {
 	matrixMultiplication,
 } = require(__dirname + '/operations/matrixOperations.js')
 const { printVars, printFullVars } = require(__dirname + '/operations/printVariables.js')
+const printVariableValue = require(__dirname + '/operations/printVariableValue.js')
 const parenthesisEvaluation = require(__dirname + '/operations/parenthesisEvaluation.js')
 const functionAssignation = require(__dirname + '/operations/functionAssignation.js')
 const functionEvaluation = require(__dirname + '/operations/functionEvaluation.js')
@@ -42,11 +43,12 @@ const functionEvaluation = require(__dirname + '/operations/functionEvaluation.j
 const operations = [
 	printFullVars,
 	printVars,
+	printVariableValue,
+	functionEvaluation,
 	functionAssignation,
 	variableEvaluation,
 	negativeEvaluation,
 	matrixParser,
-	functionEvaluation,
 	parenthesisEvaluation,
 	assignation,
 	numberPower,

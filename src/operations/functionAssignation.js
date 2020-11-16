@@ -123,6 +123,14 @@ const functionAssignation = {
 			return [-1, -1];
 		if (tokens[indexFinPar + 1].type !== tokenTypes.equal)
 			return [-1, -1]
+		if (!tokens.slice(2, indexFinPar).every((t, i) => {
+			if (i % 2 === 0 && t.type !== tokenTypes.variable)
+				return false
+			else if (i % 2 === 1 && t.type !== tokenTypes.comma)
+				return false
+			return true
+		}))
+			return [-1, -1]
 		return [0, tokens.length]
 	},
 	evaluate: ([_pos, _len], tokens, variables) => {
