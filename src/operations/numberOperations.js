@@ -38,7 +38,6 @@ function complexDivisionByReal(a, b) {
 }
 
 function divComplex(a, b) {
-	// Conjugate of a complex = same real part, opposite complex part
 	if (b.real === 0 && b.complex === 0) {
 		console.error("Can't divide by zero")
 		return null
@@ -47,6 +46,7 @@ function divComplex(a, b) {
 		return new NumberType(a.real / b.real, 0)
 	if (b.complex === 0)
 		return complexDivisionByReal(a, b)
+	// Conjugate of a complex = same real part, opposite complex part
 	let bConjugate = new NumberType(b.real, -b.complex)
 	return complexDivisionByReal(
 		multComplex(a, bConjugate),
@@ -54,13 +54,28 @@ function divComplex(a, b) {
 	)
 }
 
-//TODO add support for complex number for a (at least), this case can occur in polynomials
 function powComplex(a, b) {
-	if (a.complex !== 0 || b.complex !== 0) {
-		console.error("Power of complex numbers is not supported")
+	if (b.complex !== 0) {
+		console.error("Power to a complex number is not supported")
 		return null;
 	}
-	return new NumberType(Math.pow(a.real, b.real), 0)
+	else if (a.complex !== 0) {
+		if (!Number.isInteger(b.real) || b.real < 0) {
+			console.error("Can only raise a complex number to an integer power")
+			return null
+		}
+		let i = b.real
+		if (i === 0)
+			return new NumberType(1, 0)
+		let ret = new NumberType(a.real, a.complex)
+		while (i > 1) {
+			ret = multComplex(ret, a)
+			i--;
+		}
+		return ret
+	}
+	else
+		return new NumberType(Math.pow(a.real, b.real), 0)
 }
 
 /**
