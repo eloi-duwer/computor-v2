@@ -1,6 +1,4 @@
 a = 1 + 1 * 3
 b = (1 + 1) * 3
-# Yes this syntax is technically valid, as the stuff between the parenthesis is evaluated like an independant set of tokens
-# So here a and c will be reaffected
-c = (a = 5) + b
-vars
+1 - 3 + 5
+1 - (3 + 5)

@@ -66,7 +66,7 @@ class VariableType extends DataType {
 	constructor(sourceStr) {
 		super(tokenTypes.variable, sourceStr)
 		this.name = sourceStr.toLowerCase()
-		this.toString = () => this.value === null ? this.sourceStr : this.value.toString()
+		this.toString = () => /*this.value === null ? this.sourceStr : this.value.toString()*/ this.name
 		this.value = null
 	}
 }

@@ -1,3 +1,5 @@
+const { printToken } = require("../utils")
+
 const { tokenTypes } = require(__dirname + '/../tokens.js')
 
 const printVars = {
@@ -8,7 +10,11 @@ const printVars = {
 	},
 	evaluate: ([_pos, _len], _tokens, variables) => {
 		Object.keys(variables).forEach(k => {
-			console.log(`${k}: ${variables[k].toString()}`)
+			let val = variables[k].value
+			if (val === undefined || val === null)
+				console.log(`${k}: null`)
+			else
+				console.log(`${k}: ${val.toString()}`)
 		})
 		return null
 	}

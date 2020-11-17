@@ -34,6 +34,7 @@ const printVariableValue = require(__dirname + '/operations/printVariableValue.j
 const parenthesisEvaluation = require(__dirname + '/operations/parenthesisEvaluation.js')
 const functionAssignation = require(__dirname + '/operations/functionAssignation.js')
 const functionEvaluation = require(__dirname + '/operations/functionEvaluation.js')
+const polynomialResolution = require(__dirname + '/operations/polynomialResolution.js')
 
 /**
  * Here are defined operator precedence
@@ -46,6 +47,7 @@ const operations = [
 	printVariableValue,
 	functionEvaluation,
 	functionAssignation,
+	polynomialResolution,
 	variableEvaluation,
 	negativeEvaluation,
 	matrixParser,

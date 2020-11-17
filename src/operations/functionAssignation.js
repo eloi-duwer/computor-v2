@@ -1,9 +1,5 @@
-const { VariableType } = require("../tokens")
-
-const { tokenTypes, FunctionType, NumberType, PolynomialType } = require(__dirname + '/../tokens.js')
-
+const { tokenTypes, FunctionType, NumberType, PolynomialType, VariableType } = require(__dirname + '/../tokens.js')
 const { addComplex, multComplex, divComplex } = require(__dirname + '/numberOperations.js')
-
 const variableEvaluation = require(__dirname + '/variableEvaluation.js')
 
 function errorFuncAssign(msg, tokens) {
@@ -114,22 +110,26 @@ function createPolynomial(funcName, vars, tokens) {
 
 const functionAssignation = {
 	pattern: tokens => {
-		if (tokens.length <= 5
+		if (tokens.length <= 5 //Minimum length of tokens for a function definition is 6: f ( x ) = ...
 			|| tokens[0].type !== tokenTypes.variable
 			|| tokens[1].type !== tokenTypes.openParenthesis)
 			return [-1, -1]
-		let indexFinPar = tokens.findIndex(t => t.type === tokenTypes.closeParenthesis)
-		if (indexFinPar === -1 || indexFinPar === tokens.length - 1)
+		let indexFinPar = tokens.findIndex(t => t.type === tokenTypes.closeParenthesis) //Finding the index of the mathing closing parenthesis
+		if (indexFinPar === -1 || indexFinPar >= tokens.length - 2) // There must be at least 2 tokens after the closing parenthesis
 			return [-1, -1];
-		if (tokens[indexFinPar + 1].type !== tokenTypes.equal)
+		if (tokens[indexFinPar + 1].type !== tokenTypes.equal) // There must be an equal sign after the closing parenthesis
 			return [-1, -1]
-		if (!tokens.slice(2, indexFinPar).every((t, i) => {
+		if (indexFinPar > 2 && indexFinPar % 2 === 0) // There can only be an odd number of tokens before the closing parenthesis, as new arguments add two tokens (arg + comma), exception when the funciton has no arguments
+			return [-1, -1]
+		if (!tokens.slice(2, indexFinPar).every((t, i) => { //Checking for tokens between the parenthesis: we must only have variables and commas, alternating
 			if (i % 2 === 0 && t.type !== tokenTypes.variable)
 				return false
 			else if (i % 2 === 1 && t.type !== tokenTypes.comma)
 				return false
 			return true
 		}))
+			return [-1, -1]
+		if (tokens[tokens.length - 1].type === tokenTypes.questionMark) //Special case for polynomial resolution, and anyway it doesnt make sense in a function declaration
 			return [-1, -1]
 		return [0, tokens.length]
 	},
